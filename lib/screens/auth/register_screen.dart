@@ -1,10 +1,12 @@
-import 'package:chat_app/auth_navigator.dart';
-import 'package:chat_app/screens/login_screen.dart';
+
+import 'package:chat_app/screens/home/home_screen.dart';
 import 'package:chat_app/widgets/text_field_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 // import provider
 import 'package:provider/provider.dart';
-import '../services/auth/auth_service.dart';
+import '../../services/auth/auth_navigator.dart';
+import '../../services/auth/auth_service.dart';
 
 class RegisterScreen extends StatefulWidget {
 
@@ -19,17 +21,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
 
  
-  Future<void> signUp(String email, String password) async {
-    // Add the signInWithEmailAndPassword method here
+  /// Asynchronously sign-up a user using email, password and displayName.
+  ///
+  /// Utilizes the [AuthService.signUpWithEmailAndPassword] and [AuthService.signInWithEmailAndPassword]
+  /// methods for authentication.
+  /// On failure, shows a Snackbar with an error message.
+  Future<void> signUp(String email, String password, String displayName) async {
     final authService = Provider.of<AuthService>(context, listen: false);
     try {
-      await authService.signUpWithEmailAndPassword(email, password);
-      
+      UserCredential userCredential = await authService.signUpWithEmailAndPassword(email, password, displayName);
+
       await authService.signInWithEmailAndPassword(email, password);
 
-    }on Exception catch (e){
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => const HomeScreen(),
+        ),
+      );
 
-      // show errror in a snackbar
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Account created successfully'),
+        ),
+      );
+
+    } on Exception catch (e) {
+      // Show error in a Snackbar
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(e.toString()),
@@ -37,6 +54,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       );
     }
   }
+
 
 
 
@@ -50,6 +68,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final emailController = TextEditingController();
     final passwordController = TextEditingController();
     final confirmPasswordController = TextEditingController();
+    final displayNameController = TextEditingController();
 
     return Scaffold(
       body: SafeArea(
@@ -79,6 +98,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     obscureText: false,
                     controller: emailController,
                   ),
+
+                  const SizedBox(height: 16),
+
+                  TextFieldWidget (
+                    labelText: 'Display Name',
+                    prefixIcon: Icons.person,
+                    obscureText: false,
+                    controller: displayNameController,),
               
                   const SizedBox(height: 16),
               
@@ -98,7 +125,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     obscureText: true,
                     controller: confirmPasswordController,
                   ),
-              
+
+            
                   const SizedBox(height: 24),
               
                   // register button
@@ -106,9 +134,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     onPressed: () {
                       try {
                         if (passwordController.text == confirmPasswordController.text) {
-                          signUp(emailController.text, passwordController.text);
+                          signUp(emailController.text, passwordController.text, displayNameController.text);
                         } else {
-                          throw Exception('Passwords do not match');
+                          throw Exception('Password error: Passwords do not match, are empty, or less than 6 characters');
                         }
                       } on Exception catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -130,7 +158,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     onTap: () {
                       AuthNavigator.goToLogin(context);
                       // go to homepage
-
+                      
                     },
                     child: Text(
                       'Sign in',

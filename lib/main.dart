@@ -1,7 +1,4 @@
-
-
-import 'package:chat_app/screens/login_screen.dart';
-import 'package:chat_app/screens/register_screen.dart';
+import 'package:chat_app/screens/auth/login_screen.dart';
 import 'package:chat_app/services/auth/auth_gate.dart';
 import 'package:chat_app/services/auth/auth_service.dart';
 import 'package:flutter/material.dart';
