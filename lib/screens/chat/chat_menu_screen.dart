@@ -40,7 +40,7 @@ class _ChatMenuScreenState extends State<ChatMenuScreen> {
   }
 
   Widget _getLastMessage(bool isContent, String receiverUid) {
-  // Construct the chat ID based on the user's UID and the receiver's UID
+  // Construct the chat ID based on the user's UID and the receiver's UID. If it is  a timestamp put false for isContent. We also need the receiver uid which is passed in.
   String chatId = "${auth.currentUser!.uid}_$receiverUid";
 
   return StreamBuilder<QuerySnapshot>(
@@ -55,7 +55,13 @@ class _ChatMenuScreenState extends State<ChatMenuScreen> {
       }
 
       if (!snapshot.hasData || snapshot.data == null || snapshot.data!.docs.isEmpty) {
-        return const Text("sus");
+        if (isContent) {
+          return const Text("No messages yet.");
+        }
+        else {
+          return const Text("");
+        }
+     
       }
 
       var data = snapshot.data!.docs[0].data() as Map<String, dynamic>;
@@ -66,7 +72,7 @@ class _ChatMenuScreenState extends State<ChatMenuScreen> {
         }
         return Text(data['content'] ?? "No messages");
       } else {
-        return Text(DateFormat('dd MMM kk:mm').format(data['timestamp'].toDate())); // to fix
+        return Text(DateFormat('MMM d, h:mm a').format(data['timestamp'].toDate())); // to fix
       }
     },
   );
@@ -125,8 +131,8 @@ class _ChatMenuScreenState extends State<ChatMenuScreen> {
                 leading: profileService.getProfileImage(document.id, 26
                 , ),
                 title: Text(data['displayname'] ?? "no display name", textAlign: TextAlign.left, style: const TextStyle(fontSize: 18,),),
-             subtitle: _getLastMessage(true, data['uid']),
-              trailing: _getLastMessage(false, data['uid']),
+                subtitle: _getLastMessage(true, data['uid'] ?? "No messages yet."),
+                trailing: _getLastMessage(false, data['uid'] ?? ""),
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(receiverEmail: data['email'], receiverUid: data["uid"], receiverDisplayname: data["displayname"],)));
                 },

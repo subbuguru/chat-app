@@ -1,7 +1,10 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'package:chat_app/services/profile/profile_service.dart';
 
 import '../../services/friends/friends_service.dart';
 
@@ -92,9 +95,7 @@ class _FriendsList extends StatelessWidget {
                     // Show the friend's details if the data is available.
                     var friendData = snapshot.data!.data()! as Map<String, dynamic>;
                     return ListTile(
-                      leading: CircleAvatar(
-                        backgroundImage: NetworkImage(friendData['profileImageUrl']),
-                      ),
+                      leading: ProfileService().getProfileImage(friendUid, 16),
                       title: Text(friendData['displayname']),
                       subtitle: Text(friendData['email']),
                       trailing: IconButton(icon: const Icon(Icons.remove), onPressed: () {
@@ -168,8 +169,13 @@ class _IncomingRequests extends StatelessWidget {
   final FriendService friendService;
   final String uid;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  ProfileService profileService = ProfileService();
 
-  _IncomingRequests({required this.friendService, required this.uid});
+  _IncomingRequests({
+    Key? key,
+    required this.friendService,
+    required this.uid,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -224,11 +230,9 @@ class _IncomingRequests extends StatelessWidget {
                 var friendData = snapshot.data!.data() as Map<String, dynamic>;
 
                 return ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: NetworkImage(friendData['profileImageUrl']),
-                  ),
-                  title: Text(friendData['displayname']),
-                  subtitle: Text(friendData['email']),
+                  leading: profileService.getProfileImage(friendUid, 16),
+                  title: Text(friendData['displayname'] ?? ''),
+                  subtitle: Text(friendData['email'] ?? ''),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
