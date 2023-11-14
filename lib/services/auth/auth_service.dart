@@ -17,6 +17,7 @@ class AuthService extends ChangeNotifier{
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
+       
       );
 
 
