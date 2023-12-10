@@ -93,14 +93,14 @@ class _ChatMenuScreenState extends State<ChatMenuScreen> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
+      /*floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Code to handle adding a new group chat
         },
         child: Icon(Icons.group_add), // Using a group_add icon as an example
         tooltip: 'Add Group Chat', // Describes the action on long press
         // Ensures visibility
-      ),
+      ), */
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('users')

@@ -34,6 +34,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  // private method to reset current users password by email
+  Future<void> _resetPassword() async {
+    var user = FirebaseAuth.instance.currentUser;
+    if (user != null && user.email != null) {
+      try {
+        await FirebaseAuth.instance.sendPasswordResetEmail(email: user.email!);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Password reset email sent to ${user.email}')),
+        );
+      } catch (error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: ${error.toString()}')),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('No user signed in')),
+      );
+    }
+  }
+
   // private method to update current users display name
   Future<void> _updateCurrentUserDisplayName() async {
     await FirebaseFirestore.instance
@@ -99,30 +120,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
             const SizedBox(height: 40),
-            ElevatedButton(
-              onPressed: () {
-                // Handle display .
-                _updateCurrentUserDisplayName();
-                _loadCurrentUserDisplayName();
-              },
-              child: const Text('Update Profile'),
-            ),
-            const SizedBox(height: 40),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                TextButton(
+                ElevatedButton(
+                  onPressed: () {
+                    // Handle display .
+                    _updateCurrentUserDisplayName();
+                    _loadCurrentUserDisplayName();
+                  },
+                  child: const Text('Update Profile'),
+                ),
+                ElevatedButton(
                   onPressed: () {
                     // Handle password reset.
+                    _resetPassword();
                   },
                   child: const Text('Reset Password'),
                 ),
-                TextButton(
+                /*TextButton(
                   onPressed: () {
                     // Handle email reset.
                   },
                   child: const Text('Reset Email'),
-                ),
+                ),*/
               ],
             ),
           ],

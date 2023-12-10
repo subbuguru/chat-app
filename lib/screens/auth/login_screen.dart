@@ -28,7 +28,8 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> signIn(String email, String password) async {
     final authService = Provider.of<AuthService>(context, listen: false);
     try {
-      UserCredential userCredential = await authService.signInWithEmailAndPassword(email, password);
+      UserCredential userCredential =
+          await authService.signInWithEmailAndPassword(email, password);
 
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
@@ -65,7 +66,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -86,19 +86,22 @@ class _LoginScreenState extends State<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   // Title text
-                  const Text("Let's Chat.", style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
-                  
-                  const SizedBox(height: 24),
-                  
+                  const Text("Let's Chat",
+                      style:
+                          TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center),
+
+                  const SizedBox(height: 16),
+
                   // Message icon (replaceable)
                   Icon(
                     Icons.message,
-                    size: 140,
+                    size: 120,
                     color: primaryColor,
                   ),
-                  
-                  const SizedBox(height: 24),
-                  
+
+                  const SizedBox(height: 8),
+
                   // Email input field
                   TextFieldWidget(
                     labelText: 'Email',
@@ -106,9 +109,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     obscureText: false,
                     controller: emailController,
                   ),
-                  
+
                   const SizedBox(height: 16),
-                  
+
                   // Password input field
                   TextFieldWidget(
                     labelText: 'Password',
@@ -116,9 +119,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     obscureText: true,
                     controller: passwordController,
                   ),
-                  
+
                   const SizedBox(height: 24),
-                  
+
                   // Login button
                   ElevatedButton(
                     onPressed: () {
@@ -133,10 +136,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     child: const Text('Log in'),
                   ),
-                  
+
                   const SizedBox(height: 16),
-                  
-                /*  // Google Sign-in button
+
+                  /*  // Google Sign-in button
                   ElevatedButton(
                     onPressed: () {
                       final authService = Provider.of<AuthService>(context, listen: false);
@@ -153,18 +156,42 @@ class _LoginScreenState extends State<LoginScreen> {
                       ],
                     ),
                   ), */
-                  
+
                   const SizedBox(height: 16),
-                  
+
+                  // row for create an account, forgot password
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: GestureDetector(
+                          onTap: () => AuthNavigator.goToRegister(context),
+                          child: Text(
+                            'Create an Account',
+                            style: TextStyle(color: primaryColor),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      //navigate to forgot password screen
+                      Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            AuthNavigator.goToForgotPassword(context);
+                          },
+                          child: Text(
+                            'Forgot Password?',
+                            style: TextStyle(color: primaryColor),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
                   // Navigate to register screen
-                  GestureDetector(
-                    onTap:() => AuthNavigator.goToRegister(context),
-                    child: Text(
-                      'Create an account',
-                      style: TextStyle(color: primaryColor),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
                 ],
               ),
             ),

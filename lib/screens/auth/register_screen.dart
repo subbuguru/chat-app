@@ -1,4 +1,3 @@
-
 import 'package:chat_app/screens/home/home_screen.dart';
 import 'package:chat_app/widgets/text_field_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,7 +8,6 @@ import '../../services/auth/auth_navigator.dart';
 import '../../services/auth/auth_service.dart';
 
 class RegisterScreen extends StatefulWidget {
-
   //add super.key
   const RegisterScreen({Key? key}) : super(key: key);
 
@@ -18,9 +16,6 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-
-
- 
   /// Asynchronously sign-up a user using email, password and displayName.
   ///
   /// Utilizes the [AuthService.signUpWithEmailAndPassword] and [AuthService.signInWithEmailAndPassword]
@@ -29,7 +24,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Future<void> signUp(String email, String password, String displayName) async {
     final authService = Provider.of<AuthService>(context, listen: false);
     try {
-      UserCredential userCredential = await authService.signUpWithEmailAndPassword(email, password, displayName);
+      UserCredential userCredential = await authService
+          .signUpWithEmailAndPassword(email, password, displayName);
 
       await authService.signInWithEmailAndPassword(email, password);
 
@@ -44,7 +40,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
           content: Text('Account created successfully'),
         ),
       );
-
     } on Exception catch (e) {
       // Show error in a Snackbar
       ScaffoldMessenger.of(context).showSnackBar(
@@ -54,10 +49,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       );
     }
   }
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -80,19 +71,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Text("Sign Up.", style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
-              
-                  const SizedBox(height: 24),
-                  // Message icon (you can replace this with your own icon)
-                  Icon(
-                    Icons.message,
-                    size: 140,
-                    color: primaryColor,
+                  const Text(
+                    "Create an Account",
+                    style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
                   ),
+
                   const SizedBox(height: 24),
                   // Email input field
-                  
-                  TextFieldWidget (
+
+                  TextFieldWidget(
                     labelText: 'Email',
                     prefixIcon: Icons.email,
                     obscureText: false,
@@ -101,42 +89,45 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                   const SizedBox(height: 16),
 
-                  TextFieldWidget (
+                  TextFieldWidget(
                     labelText: 'Display Name',
                     prefixIcon: Icons.person,
                     obscureText: false,
-                    controller: displayNameController,),
-              
+                    controller: displayNameController,
+                  ),
+
                   const SizedBox(height: 16),
-              
+
                   // Password input field
-                  TextFieldWidget (
+                  TextFieldWidget(
                     labelText: 'Password',
                     prefixIcon: Icons.lock,
                     obscureText: true,
                     controller: passwordController,
                   ),
-              
+
                   const SizedBox(height: 16),
-                  
-                  TextFieldWidget (
+
+                  TextFieldWidget(
                     labelText: 'Confirm Password',
                     prefixIcon: Icons.lock,
                     obscureText: true,
                     controller: confirmPasswordController,
                   ),
 
-            
                   const SizedBox(height: 24),
-              
+
                   // register button
                   ElevatedButton(
                     onPressed: () {
                       try {
-                        if (passwordController.text == confirmPasswordController.text) {
-                          signUp(emailController.text, passwordController.text, displayNameController.text);
+                        if (passwordController.text ==
+                            confirmPasswordController.text) {
+                          signUp(emailController.text, passwordController.text,
+                              displayNameController.text);
                         } else {
-                          throw Exception('Password error: Passwords do not match, are empty, or less than 6 characters');
+                          throw Exception(
+                              'Password error: Passwords do not match, are empty, or less than 6 characters');
                         }
                       } on Exception catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -158,11 +149,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     onTap: () {
                       AuthNavigator.goToLogin(context);
                       // go to homepage
-                      
                     },
                     child: Text(
                       'Sign in',
-                      style: TextStyle(color: primaryColor,  ),
+                      style: TextStyle(
+                        color: primaryColor,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ),
