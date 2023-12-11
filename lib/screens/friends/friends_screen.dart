@@ -35,8 +35,6 @@ class _FriendsScreenState extends State<FriendsScreen> {
           children: [
             _FriendsList(friendService: _friendService, uid: _authUid),
             _FriendsAndSearchPage(friendService: _friendService, uid: _authUid),
-
-            
           ],
         ),
       ),
@@ -60,15 +58,19 @@ class _FriendsList extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error loading friends list: ${snapshot.error}')),
-          );
-          return const Center(child: Text('Error loading friends list'));
-        } 
-        else {
+          return const Center(
+              child: Padding(
+            padding: EdgeInsets.all(32),
+            child: Text(
+              'Error loading friends list. You may not have added friends yet.',
+              textAlign: TextAlign.center,
+            ),
+          ));
+        } else {
           var friends = snapshot.data!.docs.where((doc) => !doc['isRequest']);
           if (friends.isEmpty) {
-            return const Center(child: Text('You have no friends yet. Add some!'));
+            return const Center(
+                child: Text('You have no friends yet. Add some!'));
           }
           return ListView.builder(
             itemCount: friends.length,
@@ -79,34 +81,36 @@ class _FriendsList extends StatelessWidget {
               // Fetch the friend's details from the 'users' collection using the UID.
               return FutureBuilder<DocumentSnapshot>(
                 future: firestore.collection('users').doc(friendUid).get(),
-                builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+                builder: (BuildContext context,
+                    AsyncSnapshot<DocumentSnapshot> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     // Show a loading spinner while waiting for the friend's details.
                     return const CircularProgressIndicator();
-                  }
-                  else if (snapshot.hasError) {
+                  } else if (snapshot.hasError) {
                     // Show an error message if there's an error loading the friend's details.
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Error loading friend info: ${snapshot.error}')),
+                    return const Center(
+                      child: Text(
+                          "Error. You may not have added friends. Please try again"),
                     );
-                    return const ListTile(title: Text('Error loading info'));
-                  }
-                  else {
+                  } else {
                     // Show the friend's details if the data is available.
-                    var friendData = snapshot.data!.data()! as Map<String, dynamic>;
+                    var friendData =
+                        snapshot.data!.data()! as Map<String, dynamic>;
                     return ListTile(
-                      leading: ProfileService().getProfileImage(friendUid, 16),
-                      title: Text(friendData['displayname']),
-                      subtitle: Text(friendData['email']),
-                      trailing: IconButton(icon: const Icon(Icons.remove), onPressed: () {
-                        friendService.declineFriendRequest(friendUid);
-                      },)
-                    );
+                        leading:
+                            ProfileService().getProfileImage(friendUid, 16),
+                        title: Text(friendData['displayname']),
+                        subtitle: Text(friendData['email']),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.remove),
+                          onPressed: () {
+                            friendService.declineFriendRequest(friendUid);
+                          },
+                        ));
                   }
                 },
               );
             },
-
           );
         }
       },
@@ -118,7 +122,8 @@ class _FriendsAndSearchPage extends StatelessWidget {
   final FriendService friendService;
   final String uid;
 
-  const _FriendsAndSearchPage({super.key, required this.friendService, required this.uid});
+  const _FriendsAndSearchPage(
+      {super.key, required this.friendService, required this.uid});
 
   @override
   Widget build(BuildContext context) {
@@ -132,11 +137,15 @@ class _FriendsAndSearchPage extends StatelessWidget {
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
           ),
-          const SizedBox(height: 16,),
+          const SizedBox(
+            height: 16,
+          ),
           _UserSearch(
             friendService: friendService,
           ),
-          const SizedBox(height: 16,),
+          const SizedBox(
+            height: 16,
+          ),
           Padding(
             padding: const EdgeInsets.all(24.0),
             child: Divider(thickness: 2),
@@ -152,15 +161,11 @@ class _FriendsAndSearchPage extends StatelessWidget {
             friendService: friendService,
             uid: uid,
           ),
-  
-          
         ],
       ),
     );
   }
 }
-
-
 
 // Define `IncomingRequests` and `UserSearch` widgets in a similar way.
 
@@ -185,23 +190,26 @@ class _IncomingRequests extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
-        
+
         if (snapshot.hasError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error loading friends list: ${snapshot.error}')),
-          );
-          return const Center(child: Text('Error loading friends list'));
+          //centered text. Error, you may not have added friends yet.
+          return const Center(
+              child: Padding(
+            padding: EdgeInsets.all(32.0),
+            child: Text(
+              'Error loading friend requests. You may not have any requests. Please try again.',
+              textAlign: TextAlign.center,
+            ),
+          ));
         }
 
         if (snapshot.data == null) {
-          return const Center(child: Text('You have no friend requests right now.'));
+          return const Center(
+              child: Text('You have no friend requests right now.'));
         }
 
-        var friends = snapshot.data!.docs.where((doc) => doc['isRequest'] == true && doc['senderId'] != uid);
-
-        if (friends.isEmpty) {
-          return const Center(child: Text('You have no friend requests right now.'));
-        }
+        var friends = snapshot.data!.docs
+            .where((doc) => doc['isRequest'] == true && doc['senderId'] != uid);
 
         return ListView.builder(
           shrinkWrap: true,
@@ -211,14 +219,17 @@ class _IncomingRequests extends StatelessWidget {
 
             return FutureBuilder<DocumentSnapshot>(
               future: firestore.collection('users').doc(friendUid).get(),
-              builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+              builder: (BuildContext context,
+                  AsyncSnapshot<DocumentSnapshot> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                
+
                 if (snapshot.hasError) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Error loading friend info: ${snapshot.error}')),
+                    SnackBar(
+                        content: Text(
+                            'Error loading friend info: ${snapshot.error}')),
                   );
                   return const ListTile(title: Text('Error loading info'));
                 }
@@ -226,7 +237,7 @@ class _IncomingRequests extends StatelessWidget {
                 if (snapshot.data?.data() == null) {
                   return const ListTile(title: Text('No requests right now.'));
                 }
-                
+
                 var friendData = snapshot.data!.data() as Map<String, dynamic>;
 
                 return ListTile(
@@ -260,53 +271,55 @@ class _IncomingRequests extends StatelessWidget {
   }
 }
 
-
 // This widget will display a search bar to search for users and send friend requests.
 class _UserSearch extends StatefulWidget {
   final FriendService friendService;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  _UserSearch({required this.friendService,});
+  _UserSearch({
+    required this.friendService,
+  });
 
   @override
   _UserSearchState createState() => _UserSearchState();
 }
 
 class _UserSearchState extends State<_UserSearch> {
-  final _searchController = TextEditingController(); // Controller for the search bar input
+  final _searchController =
+      TextEditingController(); // Controller for the search bar input
 
-  Future<void> _trySendRequest(String friendEmail) async { // this function sends a friendrequest based on the uid of the email which is searched.
-  try {
-    // Fetch user with given email from Firestore
-    var users = await widget.firestore
-        .collection('users')
-        .where('email', isEqualTo: friendEmail)
-        .get();
+  Future<void> _trySendRequest(String friendEmail) async {
+    // this function sends a friendrequest based on the uid of the email which is searched.
+    try {
+      // Fetch user with given email from Firestore
+      var users = await widget.firestore
+          .collection('users')
+          .where('email', isEqualTo: friendEmail)
+          .get();
 
-    if (users.docs.isEmpty) {
-      throw Exception('No user found with this email');
+      if (users.docs.isEmpty) {
+        throw Exception('No user found with this email');
+      }
+
+      // Extract the uid of the fetched user
+      String friendUid = users.docs.first.get('uid');
+
+      // Check if the user is trying to send a friend request to themselves
+      if (friendUid == FirebaseAuth.instance.currentUser!.uid) {
+        throw Exception("You can't send a friend request to yourself");
+      }
+
+      await widget.friendService.sendFriendRequest(
+          friendUid); // Send a friend request based on UID of friend
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Friend request sent')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
     }
-
-    // Extract the uid of the fetched user
-    String friendUid = users.docs.first.get('uid');
-
-    // Check if the user is trying to send a friend request to themselves
-    if (friendUid == FirebaseAuth.instance.currentUser!.uid) {
-      throw Exception("You can't send a friend request to yourself");
-    }
-
-    await widget.friendService.sendFriendRequest(friendUid); // Send a friend request based on UID of friend
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Friend request sent')),
-    );
-  } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Error: $e')),
-    );
   }
-}
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -319,19 +332,22 @@ class _UserSearchState extends State<_UserSearch> {
             controller: _searchController,
             decoration: InputDecoration(
               labelText: 'Type user email to send request',
-              prefixIcon: GestureDetector(child: const Icon(Icons.search,
-              ), onTap:() {
-                
-              },), // Update search results when the value changes
-              border: const OutlineInputBorder(),  // This makes the TextField box-shaped
+              prefixIcon: GestureDetector(
+                child: const Icon(
+                  Icons.search,
+                ),
+                onTap: () {},
+              ), // Update search results when the value changes
+              border:
+                  const OutlineInputBorder(), // This makes the TextField box-shaped
             ),
-    
           ),
         ),
         ElevatedButton(
           onPressed: () {
             if (_searchController.text.isNotEmpty) {
-              _trySendRequest(_searchController.text); // Send a friend request when the search button is pressed
+              _trySendRequest(_searchController
+                  .text); // Send a friend request when the search button is pressed
             }
           },
           child: const Text('Send friend request'),

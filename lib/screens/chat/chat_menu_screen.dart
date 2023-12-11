@@ -82,7 +82,7 @@ class _ChatMenuScreenState extends State<ChatMenuScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("chat"),
+        title: const Text("Your Chats"),
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
@@ -109,10 +109,11 @@ class _ChatMenuScreenState extends State<ChatMenuScreen> {
             .where('isRequest', isEqualTo: false)
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.hasError) {
-            return const Text('Something went wrong');
+          if (snapshot.data == null || snapshot.data!.docs.isEmpty) {
+            return const Center(
+              child: Text("Add friends to chat."),
+            );
           }
-
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }

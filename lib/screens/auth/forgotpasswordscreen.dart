@@ -1,3 +1,4 @@
+import 'package:chat_app/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -34,20 +35,16 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          //mainAxisSize: MainAxisSize.min,
+          mainAxisSize: MainAxisSize.min,
           //  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            TextField(
-              // taller height for textfield
-
+            TextFieldWidget(
+              labelText: 'Email',
+              prefixIcon: Icons.email,
+              obscureText: false,
               controller: _emailController,
-              decoration: InputDecoration(
-                labelText: 'Email',
-                hintText: 'Enter your Email',
-              ),
-              keyboardType: TextInputType.emailAddress,
             ),
-            SizedBox(height: 32),
+            SizedBox(height: 26),
             ElevatedButton(
               onPressed: _sendPasswordResetEmail,
               child: Text('Send Password Reset Email'),
