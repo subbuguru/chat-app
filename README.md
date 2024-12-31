@@ -2,7 +2,7 @@
 
 # Flutter Firebase Chat App
 
-Welcome to our Flutter Firebase Chat App, a real-time messaging application that leverages the power of Firebase for backend services. This application supports essential features such as email authentication, user profiles, friend systems, and one-on-one chat functionalities including time stamps and image sending capabilities.
+Welcome to our Flutter Firebase Chat App, my real-time messaging application that uses of Firebase for backend services. This application supports essential features such as email authentication, user profiles, friend systems, and one-on-one chat functionalities including time stamps and image sending capabilities.
 
 ## Features
 
