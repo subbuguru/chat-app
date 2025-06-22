@@ -2,6 +2,11 @@
 # Flutter Firebase Chat App
 A real-time messaging application that uses Firebase for backend services. Supports essential features such as email authentication, user profiles, friend systems, and one-on-one chat functionalities including time stamps and image sending capabilities. Currently only android has been tested.
 
+## Why I Built This
+
+I built this project as my first hands-on experience with both Flutter and Firebase. It saw limited use testing between a few family members and friends.
+
+
 ## Screenshots
 <div style="display: flex; flex-direction: row; justify-content: space-between;">
     <img src="https://github.com/user-attachments/assets/d20802c3-fe75-47c0-af7a-f647894ba070" width="22%" />
